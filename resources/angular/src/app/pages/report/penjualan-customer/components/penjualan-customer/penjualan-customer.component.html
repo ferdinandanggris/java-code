@@ -1,0 +1,176 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h1>Rekap Penjualan Customer</h1>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="row col-md-8">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Bulan</label>
+                                    <ng-select
+                                        [(ngModel)]="formModel.id_bulan"
+                                        [items]="listMonth"
+                                        bindLabel="nama"
+                                        bindValue="value"
+                                        placeholder="Pilih Bulan"
+                                        name="bulan"
+                                        appendTo="body"
+                                        [clearable]="false"
+                                        (change)="refreshData()"
+                                    ></ng-select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label class="form-label">Tahun</label>
+                                    <ng-select
+                                        [(ngModel)]="formModel.id_tahun"
+                                        [items]="listYear"
+                                        bindValue="value"
+                                        bindLabel="value"
+                                        placeholder="Pilih Tahun"
+                                        name="tahun"
+                                        appendTo="body"
+                                        [clearable]="false"
+                                        (change)="refreshData()"
+                                    ></ng-select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">User</label>
+                                <ng-select
+                                    [(ngModel)]="formModel.user"
+                                    [items]="listUser"
+                                    bindLabel="nama"
+                                    [multiple]="true"
+                                    placeholder="Pilih User"
+                                    name="user.id"
+                                    appendTo="body"
+                                    (change)="refreshData()"
+                                ></ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center my-3">
+                        <div
+                            class="btn-group"
+                            role="group"
+                            aria-label="Basic example"
+                        >
+                            <button type="button" class="btn btn-primary">
+                                Tampilkan
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                (click)="generatePdf()"
+                            >
+                                <i class="fa fa-solid fa-file-pdf"></i>
+                                PDF
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                (click)="generateExcel()"
+                            >
+                                <i class="fa fa-solid fa-file-csv"></i>
+                                Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <table
+                        class="table table-hover table-bordered table-responsive"
+                    >
+                        <thead class="thead-light text-white">
+                            <tr class="bg-primary">
+                                <td class="text-center" rowspan="2">No</td>
+                                <td rowspan="2" class="text-center">
+                                    Karyawan
+                                </td>
+                                <td [colSpan]="dateLength" class="text-center">
+                                    Periode {{ this.formModel.bulan.nama }}
+                                    {{ this.formModel.id_tahun }}
+                                </td>
+                                <td rowspan="2" class="text-center">Total</td>
+                            </tr>
+                            <tr class="bg-primary">
+                                <td
+                                    class="vertical-middle"
+                                    *ngFor="let day of listDay; index as i"
+                                >
+                                    {{ listDay[i] }}
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let total of listGrandTotal; index as i"
+                            >
+                                <td colspan="2">{{ total.nama }}</td>
+                                <td
+                                    class="vertical-middle"
+                                    *ngFor="let day of listDay; index as k"
+                                >
+                                    {{
+                                        total["tgl" + (k + 1)] == 0
+                                            ? "-"
+                                            : (total["tgl" + (k + 1)]
+                                              | currency: "Rp. ")
+                                    }}
+                                </td>
+                                <td class="vertical-middle">
+                                    {{
+                                        total.total == 0
+                                            ? "-"
+                                            : (total.total | currency: "Rp. ")
+                                    }}
+                                </td>
+                            </tr>
+                            <tr
+                                *ngFor="
+                                    let customer of listPenjualanCustomer;
+                                    index as j
+                                "
+                            >
+                                <td>{{ j + 1 }}</td>
+                                <td class="vertical-middle">
+                                    {{ customer.nama }}
+                                </td>
+                                <td
+                                    class="vertical-middle"
+                                    *ngFor="let day of listDay; index as k"
+                                >
+                                    {{
+                                        customer["tgl" + (k + 1)] == 0
+                                            ? "-"
+                                            : (customer["tgl" + (k + 1)]
+                                              | currency: "Rp. ")
+                                    }}
+                                </td>
+
+                                <td class="vertical-middle">
+                                    {{
+                                        customer.total == 0
+                                            ? "-"
+                                            : (customer.total
+                                              | currency: "Rp. ")
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

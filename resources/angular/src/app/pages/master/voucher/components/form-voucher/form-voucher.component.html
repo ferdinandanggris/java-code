@@ -1,0 +1,128 @@
+<form>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <label class="required">User</label>
+        <ng-select
+          [(ngModel)]="formModel.user"
+          [items]="listUser"
+          bindLabel="nama"
+          placeholder="Pilih User"
+          name="id_user"
+          appendTo="body"
+          (change)="showUser(formModel.user.id)"
+        ></ng-select>
+      </div>
+
+      <div class="mb-3">
+        <label for="periode_mulai" class="form-label">
+          Periode Mulai
+        </label>
+        <input
+          class="form-control"
+          type="text"
+          name="daterangeInput"
+          daterangepicker
+          [(ngModel)]="formModel.periode_mulai"
+          [options]="options"
+          (selected)="selectedDate($event, daterange)"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label required">Type</label>
+        <br />
+        <div
+          class="btn-group"
+          role="group"
+          ngbRadioGroup
+          name="status"
+          [(ngModel)]="formModel.status"
+        >
+          <label ngbButtonLabel class="btn-info">
+            <input ngbButton type="radio" class="btn-check" value="1"  />
+            Aktif
+          </label>
+          <label ngbButtonLabel class="btn-info">
+            <input ngbButton type="radio" class="btn-check" value="0" checked/>
+            Tidak Aktif
+          </label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="catatan" class="form-label required">
+          Catatan
+        </label>
+        <textarea
+          type="text"
+          class="form-control"
+          id="catatan"
+          name="catatan"
+          [(ngModel)]="formModel.catatan"
+        ></textarea>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="mb-3">
+        <label class="required">Voucher</label>
+        <ng-select
+          [(ngModel)]="formModel.promo"
+          [items]="listPromoByVoucher"
+          bindLabel="nama"
+          placeholder="Pilih Voucher"
+          name="voucher"
+          appendTo="body"
+          (change)="
+            showPromo(
+              formModel.promo.fotoUrl,
+              formModel.promo.nominal,
+              formModel.promo.kadaluarsa
+            )
+          "
+        ></ng-select>
+      </div>
+      <div class="mb-3">
+        <label for="nominal" class="form-label">
+          Nominal
+        </label>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Rp.</span>
+          <input
+            type="text"
+            class="form-control"
+            id="nominal"
+            name="nominal"
+            [(ngModel)]="formModel.promo.nominal"
+            aria-describedby="basic-addon1"
+            required
+            readonly
+          />
+        </div>
+      </div>
+      <div class="mb-3" *ngIf="formModel.promo.id_promo > 0">
+        <img
+          class="img-menu rounded mx-auto d-block"
+          [src]="formModel.promo.fotoUrl"
+        />
+        <small class="form-text text-muted text-center fs-5">
+          Masa berlaku voucher :
+          <span class="fw-bold">{{ formModel.promo.kadaluarsa }}</span>
+          hari
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <div class="">
+      <button
+        type="button"
+        class="btn btn-outline-secondary mr-2"
+        (click)="back()"
+      >
+        Daftar Setting Voucher
+      </button>
+      <button type="submit" class="btn btn-warning" (click)="save()">
+        Simpan
+      </button>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,211 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h1>Rekap Penjualan</h1>
+                </div>
+
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="mb-3 col-md-3">
+                                    <label for="" class="form-label"
+                                        >Bulan</label
+                                    >
+                                    <ng-select
+                                        [(ngModel)]="searchModel.id_bulan"
+                                        [items]="listMonth"
+                                        bindValue="value"
+                                        bindLabel="nama"
+                                        placeholder="Pilih Bulan"
+                                        name="bulan"
+                                        appendTo="body"
+                                        [clearable]="false"
+                                        (change)="refreshData()"
+                                    ></ng-select>
+                                </div>
+                                <div class="mb-3 col-md-2">
+                                    <label for="" class="form-label"
+                                        >Tahun</label
+                                    >
+                                    <ng-select
+                                        [(ngModel)]="searchModel.id_tahun"
+                                        [items]="listYear"
+                                        bindValue="value"
+                                        bindLabel="value"
+                                        placeholder="Pilih Tahun"
+                                        name="tahun"
+                                        appendTo="body"
+                                        [clearable]="false"
+                                        (change)="refreshData()"
+                                    ></ng-select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col justify-content-end">
+                            <div class="mb-3">
+                                <label for="" class="form-label"
+                                    >Customer</label
+                                >
+                                <ng-select
+                                    [(ngModel)]="searchModel.id_user"
+                                    [items]="listUser"
+                                    bindLabel="nama"
+                                    bindValue="id"
+                                    placeholder="Pilih Customer"
+                                    name="nama"
+                                    appendTo="body"
+                                    (change)="refreshData()"
+                                ></ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3">
+                        <div
+                            class="btn-group"
+                            role="group"
+                            aria-label="Basic example"
+                        >
+                            <button type="button" class="btn btn-primary">
+                                Tampilkan
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                (click)="generatePdf()"
+                            >
+                                <i class="fa fa-solid fa-file-pdf"></i>
+                                PDF
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                (click)="generateExcel()"
+                            >
+                                <i class="fa fa-solid fa-file-csv"></i>
+                                Excel
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                    <table class="table table-hover">
+                        <thead class="thead-light bg-primary text-white">
+                            <tr>
+                                <td class="text-center" rowspan="2">No</td>
+                                <td class="text-center" rowspan="2">
+                                    No Struk
+                                </td>
+                                <td class="text-center" rowspan="2">
+                                    Customer
+                                </td>
+                                <td class="text-center" rowspan="2">Tanggal</td>
+                                <td class="text-center" rowspan="2">Menu</td>
+                                <td class="text-center" rowspan="2">Jumlah</td>
+                                <td class="text-center" rowspan="2">Harga</td>
+                                <td class="text-center" rowspan="2">Total</td>
+                                <td class="text-center" colspan="2">Promo</td>
+                                <td class="text-center" rowspan="2">
+                                    Total Bayar
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">Diskon</td>
+                                <td class="text-center">Voucher</td>
+                            </tr>
+                        </thead>
+                        <tbody
+                            *ngFor="let rekap of listRekapPenjualan; index as i"
+                        >
+                            <tr>
+                                <td
+                                    class="text-center"
+                                    [rowSpan]="rekap.menu.length"
+                                >
+                                    {{ i + 1 }}
+                                </td>
+                                <td
+                                    class="text-center"
+                                    [rowSpan]="rekap.menu.length"
+                                >
+                                    {{ rekap.no_struk }}
+                                </td>
+                                <td
+                                    class="text-center"
+                                    [rowSpan]="rekap.menu.length"
+                                >
+                                    {{ rekap.nama_user }}
+                                </td>
+                                <td
+                                    class="text-center"
+                                    [rowSpan]="rekap.menu.length"
+                                >
+                                    {{ rekap.tanggal }}
+                                </td>
+                                <td class="text-center">
+                                    {{ rekap.menu[0].nama }}
+                                </td>
+                                <td class="text-center">
+                                    {{ rekap.menu[0].jumlah }}
+                                </td>
+                                <td class="text-center">
+                                    {{ rekap.menu[0].harga }}
+                                </td>
+                                <td class="text-center">
+                                    {{ rekap.menu[0].total }}
+                                </td>
+                                <td
+                                    class="text-center"
+                                    [rowSpan]="rekap.menu.length"
+                                >
+                                    {{
+                                        rekap.potongan == 0 ||
+                                        rekap.potongan == null
+                                            ? "-"
+                                            : (rekap.potongan
+                                              | currency: "Rp. ")
+                                    }}{{
+                                        rekap.diskon == 0 ||
+                                        rekap.diskon == null
+                                            ? "-"
+                                            : "(" + rekap.diskon + "%)"
+                                    }}
+                                </td>
+                                <td
+                                    class="text-center"
+                                    [rowSpan]="rekap.menu.length"
+                                >
+                                    {{
+                                        rekap.voucher == 0 ||
+                                        rekap.voucher == null
+                                            ? "-"
+                                            : (rekap.voucher | currency: "Rp. ")
+                                    }}
+                                </td>
+                                <td
+                                    class="text-center"
+                                    [rowSpan]="rekap.menu.length"
+                                >
+                                    {{ rekap.total_bayar }}
+                                </td>
+                            </tr>
+                            <tr
+                                *ngFor="
+                                    let item of rekap.menu | slice: 1;
+                                    let i = index
+                                "
+                            >
+                                <td class="text-center">{{ item.nama }}</td>
+                                <td class="text-center">{{ item.jumlah }}</td>
+                                <td class="text-center">{{ item.harga }}</td>
+                                <td class="text-center">{{ item.total }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

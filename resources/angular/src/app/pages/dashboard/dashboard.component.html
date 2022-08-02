@@ -1,0 +1,181 @@
+<div class="row">
+    <div class="col-md-5 row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card" style="">
+                    <div class="card-body">
+                        <div
+                            class="d-flex-row justify-content-center align-items-center"
+                        >
+                            <div
+                                class="rounded-circle img-thumb bg-primary mx-auto d-flex justify-content-center align-items-center"
+                                style="width: 40px; height: 40px"
+                            >
+                                <i
+                                    class="fas fa-chart-line text-center text-white"
+                                    style="width: 40px"
+                                ></i>
+                            </div>
+                            <div class="mt-3">
+                                <h5 class="text-center fw-normal">
+                                    Hasil Kemarin
+                                </h5>
+
+                                <p class="text-center card-title fw-bold">
+                                    {{
+                                        listData.kemarin.total
+                                            | currency: "Rp. "
+                                    }}
+                                </p>
+
+                                <p class="text-center">
+                                    <a
+                                        class="card-link"
+                                        href=""
+                                        [routerLink]="[
+                                            '/report/rekap-penjualan'
+                                        ]"
+                                        >View More</a
+                                    >
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card" style="">
+                    <div
+                        class="card-body d-flex-row justify-content-center align-items-center"
+                    >
+                        <div
+                            class="rounded-circle img-thumb bg-primary mx-auto d-flex justify-content-center align-items-center"
+                            style="width: 40px; height: 40px"
+                        >
+                            <i
+                                class="fas fa-money-bill-alt text-center text-white"
+                                style="width: 40px"
+                            ></i>
+                        </div>
+                        <div class="mt-3">
+                            <h5 class="text-center">Hasil Bulan lalu</h5>
+
+                            <p class="text-center card-title fw-bold">
+                                {{
+                                    listData.bulan_lalu.total | currency: "Rp. "
+                                }}
+                            </p>
+
+                            <p class="text-center">
+                                <a
+                                    class="card-link"
+                                    href=""
+                                    [routerLink]="['/report/rekap-penjualan']"
+                                    >View More</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card" style="">
+                    <div class="card-body d-flex-row align-items-center">
+                        <div
+                            class="rounded-circle img-thumb bg-primary mx-auto d-flex justify-content-center align-items-center"
+                            style="width: 40px; height: 40px"
+                        >
+                            <i
+                                class="fab fa-dropbox text-center text-white"
+                                style="width: 40px"
+                                aria-hidden="true"
+                            ></i>
+                        </div>
+                        <h5 class="text-center mt-3">Hasil Hari ini</h5>
+
+                        <p class="text-center card-title fw-bold">
+                            {{ listData.hari_ini.total | currency: "Rp. " }}
+                        </p>
+
+                        <p class="text-center">
+                            <a
+                                class="card-link"
+                                href=""
+                                [routerLink]="['/report/rekap-penjualan']"
+                                >View More</a
+                            >
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card" style="">
+                    <div class="card-body">
+                        <div
+                            class="rounded-circle img-thumb bg-primary mx-auto d-flex justify-content-center align-items-center"
+                            style="width: 40px; height: 40px"
+                        >
+                            <i
+                                class="fas fa-briefcase text-center text-white"
+                                style="width: 40px"
+                            ></i>
+                        </div>
+                        <div class="mt-3">
+                            <h5 class="text-center">Hasil Bulan ini</h5>
+                            <p class="text-center card-title fw-bold">
+                                {{ listData.hari_ini.total | currency: "Rp. " }}
+                            </p>
+
+                            <p class="text-center">
+                                <a
+                                    class="card-link"
+                                    href=""
+                                    [routerLink]="['/report/rekap-penjualan']"
+                                    >View More</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-md-4">
+                        <h5 class="text-white">Grafik Penjualan</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <ng-select
+                            [(ngModel)]="searchModel.id_tahun"
+                            [items]="listYear"
+                            bindValue="value"
+                            bindLabel="value"
+                            placeholder="Pilih Tahun"
+                            name="tahun"
+                            appendTo="body"
+                            [clearable]="false"
+                            (change)="refreshData()"
+                        ></ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <apx-chart
+                    [series]="this.chartOptions.series"
+                    [chart]="this.chartOptions.chart"
+                    [xaxis]="this.chartOptions.xaxis"
+                    [dataLabels]="this.chartOptions.dataLabels"
+                ></apx-chart>
+            </div>
+        </div>
+    </div>
+</div>

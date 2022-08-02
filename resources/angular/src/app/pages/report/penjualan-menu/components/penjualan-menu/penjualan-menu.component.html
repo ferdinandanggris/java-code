@@ -1,0 +1,243 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h1>Rekap Penjualan Menu</h1>
+                </div>
+
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="mb-3 col-md-3">
+                                    <label for="" class="form-label"
+                                        >Bulan</label
+                                    >
+                                    <ng-select
+                                        [(ngModel)]="searchParam.id_bulan"
+                                        [items]="listMonth"
+                                        bindLabel="nama"
+                                        bindValue="value"
+                                        placeholder="Pilih Bulan"
+                                        name="bulan"
+                                        appendTo="body"
+                                        [clearable]="false"
+                                        (change)="refreshData()"
+                                    ></ng-select>
+                                </div>
+                                <div class="mb-3 col-md-2">
+                                    <label for="" class="form-label"
+                                        >Tahun</label
+                                    >
+                                    <ng-select
+                                        [(ngModel)]="searchParam.id_tahun"
+                                        [items]="listYear"
+                                        bindValue="value"
+                                        bindLabel="value"
+                                        placeholder="Pilih Tahun"
+                                        name="tahun"
+                                        appendTo="body"
+                                        [clearable]="false"
+                                        (change)="refreshData()"
+                                    ></ng-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="" class="form-label"
+                                    >Kategori</label
+                                >
+                                <br />
+                                <div
+                                    class="btn-group"
+                                    role="group"
+                                    ngbRadioGroup
+                                    name="kategori"
+                                    [(ngModel)]="searchParam.kategori"
+                                >
+                                    <label ngbButtonLabel class="btn-info">
+                                        <input
+                                            ngbButton
+                                            type="radio"
+                                            class="btn-check"
+                                            value="all"
+                                            (click)="showByKategori('all')"
+                                        />
+                                        All
+                                    </label>
+                                    <label ngbButtonLabel class="btn-info">
+                                        <input
+                                            ngbButton
+                                            type="radio"
+                                            class="btn-check"
+                                            value="food"
+                                            (click)="showByKategori('food')"
+                                        />
+                                        Makanan
+                                    </label>
+                                    <label ngbButtonLabel class="btn-info">
+                                        <input
+                                            ngbButton
+                                            type="radio"
+                                            class="btn-check"
+                                            value="drink"
+                                            (click)="showByKategori('drink')"
+                                        />
+                                        Minuman
+                                    </label>
+                                    <label ngbButtonLabel class="btn-info">
+                                        <input
+                                            ngbButton
+                                            type="radio"
+                                            class="btn-check"
+                                            value="snack"
+                                            (click)="showByKategori('snack')"
+                                        />
+                                        Snack
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div
+                            class="btn-group"
+                            role="group"
+                            aria-label="Basic example"
+                        >
+                            <button type="button" class="btn btn-primary">
+                                Tampilkan
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                (click)="generatePdf()"
+                            >
+                                <i class="fa fa-solid fa-file-pdf"></i>
+                                PDF
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                (click)="generateExcel()"
+                            >
+                                <i class="fa fa-solid fa-file-csv"></i>
+                                Excel
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                    <table class="table table-hover table-responsive">
+                        <thead class="thead-light bg-primary text-white">
+                            <tr class="bg-info">
+                                <td rowspan="2" class="text-center">No</td>
+                                <td rowspan="2" class="text-center">Menu</td>
+                                <td [colSpan]="dateLength" class="text-center">
+                                    Periode
+                                </td>
+                                <td rowspan="2" class="text-center">Total</td>
+                            </tr>
+                            <tr class="bg-info">
+                                <td
+                                    class="vertical-middle"
+                                    *ngFor="let day of listDay; index as i"
+                                >
+                                    {{ listDay[i] }}
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let total of listGrandTotal; index as i"
+                            >
+                                <td colspan="2">{{ total.nama }}</td>
+                                <td
+                                    class="vertical-middle"
+                                    *ngFor="let day of listDay; index as k"
+                                >
+                                    {{
+                                        total["tgl" + (k + 1)] == 0
+                                            ? "-"
+                                            : (total["tgl" + (k + 1)]
+                                              | currency: "Rp. ")
+                                    }}
+                                </td>
+                                <td class="vertical-middle">
+                                    {{
+                                        total.total == 0
+                                            ? "-"
+                                            : (total.total | currency: "Rp. ")
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody
+                            *ngFor="let menus of listPenjualanMenu; index as i"
+                        >
+                            <tr>
+                                <td
+                                    [colSpan]="dateLength + 3"
+                                    class="thead-light"
+                                >
+                                    {{
+                                        menus[0]
+                                            ? menus[0].kategori.toUpperCase()
+                                            : ""
+                                    }}
+                                </td>
+                            </tr>
+                            <tr
+                                *ngFor="
+                                    let menu of menus
+                                        | slice: 0:menus.length - 1;
+                                    index as j
+                                "
+                            >
+                                <td>{{ j + 1 }}</td>
+                                <td class="vertical-middle">{{ menu.nama }}</td>
+                                <td
+                                    class="vertical-middle"
+                                    *ngFor="let day of listDay; index as k"
+                                >
+                                    {{
+                                        menu["tgl" + (k + 1)] == 0
+                                            ? "-"
+                                            : (menu["tgl" + (k + 1)]
+                                              | currency: "Rp. ")
+                                    }}
+                                </td>
+                                <td class="vertical-middle">
+                                    {{
+                                        menu.total == 0
+                                            ? "-"
+                                            : (menu.total | currency: "Rp. ")
+                                    }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold" [colSpan]="dateLength + 2">
+                                    {{ menus[menus.length - 1].nama }}
+                                    {{
+                                        menus[0]
+                                            ? menus[0].kategori.toUpperCase()
+                                            : ""
+                                    }}
+                                </td>
+                                <td>
+                                    {{
+                                        menus[menus.length - 1].total == 0
+                                            ? "-"
+                                            : (menus[menus.length - 1].total
+                                              | currency: "Rp. ")
+                                    }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

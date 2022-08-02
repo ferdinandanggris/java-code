@@ -1,0 +1,211 @@
+<div class="container-fluid" *ngIf="!isOpenForm">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h1>
+            Daftar Items
+          </h1>
+          <div
+            role="group"
+            class="btn-group btn-group-sm btn-group-justified blocks"
+          >
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-2"
+              (click)="showSearch(formSearch)"
+            >
+              <i class="fa fa-search font-size-14 align-middle mr-1"></i>
+              Pencarian
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-primary mr-2"
+              (click)="createItem()"
+            >
+              <i class="fa fa-plus font-size-14 align-middle mr-1"></i>
+              Tambah Items
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table
+            datatable
+            [dtOptions]="dtOptions"
+            class="table table-hover"
+            data-page-length="20"
+          >
+            <thead class="thead-light">
+              <tr>
+                <td class="vertical-middle">Nama</td>
+                <td class="vertical-middle">Kategori</td>
+                <td class="vertical-middle">Harga</td>
+                <td class="vertical-middle" width="90"></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let val of listItems; index as i">
+                <td class="vertical-middle">{{ val.nama }}</td>
+                <td class="vertical-middle">{{ val.kategori }}</td>
+                <td class="vertical-middle">
+                  {{ val.harga | currency: 'Rp. ' }}
+                </td>
+                <td class="vertical-middle text-right">
+                  <a
+                    href="javascript: void(0);"
+                    class="align-middle mr-2"
+                    (click)="updateItem(val)"
+                    placement="left"
+                    container="body"
+                    ngbTooltip="Ubah"
+                  >
+                    <i class="fa fa-edit font-size-14"></i>
+                  </a>
+                  <a
+                    href="javascript: void(0);"
+                    class="align-middle"
+                    (click)="deleteItem(val.id)"
+                    placement="left"
+                    container="body"
+                    ngbTooltip="Hapus"
+                  >
+                    <i class="fa fa-trash font-size-14"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid" *ngIf="isOpenForm">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h1>
+            {{ titleCard }}
+          </h1>
+        </div>
+        <div class="card-body">
+          <item-form
+            [itemId]="modelId"
+            (afterSave)="showForm(false); getItem()"
+          ></item-form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #formSearch let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">{{ titleCard }}</h5>
+    <button
+      type="button"
+      class="close"
+      (click)="modal.close()"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group row">
+        <label class="col-md-4">Nama</label>
+        <div class="col-md-8">
+          <input
+            type="text"
+            name="nama"
+            class="form-control"
+            placeholder="Nama Item"
+            [(ngModel)]="searchParams.nama"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4">Harga</label>
+        <div class="col-md-3">
+          <input
+            type="number"
+            name="min_harga"
+            class="form-control"
+            placeholder="Harga Mininal"
+            [(ngModel)]="searchParams.min_harga"
+          />
+        </div>
+        <label class="col-md-1 text-center">-</label>
+        <div class="col-md-3">
+          <input
+            type="number"
+            name="max_harga"
+            class="form-control"
+            placeholder="Harga Maksimal"
+            [(ngModel)]="searchParams.max_harga"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-4">Kategori</label>
+        <div class="col-md-8">
+          <div
+            class="btn-group"
+            role="group"
+            ngbRadioGroup
+            name="kategori"
+            [(ngModel)]="searchParams.kategori"
+          >
+            <label ngbButtonLabel class="btn-info">
+              <input ngbButton type="radio" class="btn-check" value="food" />
+              Food
+            </label>
+            <label ngbButtonLabel class="btn-info">
+              <input ngbButton type="radio" class="btn-check" value="drink" />
+              Drink
+            </label>
+            <label ngbButtonLabel class="btn-info">
+              <input ngbButton type="radio" class="btn-check" value="snack" />
+              Snack
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4">Status</label>
+        <div class="col-md-8">
+          <div
+            class="btn-group"
+            role="group"
+            ngbRadioGroup
+            name="is_available"
+            [(ngModel)]="searchParams.is_available"
+          >
+            <label ngbButtonLabel class="btn-info">
+              <input ngbButton type="radio" class="btn-check" value="1" />
+              Ada
+            </label>
+            <label ngbButtonLabel class="btn-info">
+              <input ngbButton type="radio" class="btn-check" value="0" />
+              Habis
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4"></label>
+        <div class="col-md-8">
+          <button type="submit" class="btn btn-primary" (click)="search()">
+            <i class="fa fa-search font-size-14 align-middle mr-1"></i>
+            Cari
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

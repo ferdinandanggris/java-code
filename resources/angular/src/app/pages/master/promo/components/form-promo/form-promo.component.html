@@ -1,0 +1,145 @@
+<form>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="mb-3">
+        <label for="name" class="form-label">
+          Nama
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          name="name"
+          [(ngModel)]="formModel.nama"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Type</label>
+        <br />
+        <div
+          class="btn-group"
+          role="group"
+          ngbRadioGroup
+          name="type"
+          [(ngModel)]="formModel.type"
+        >
+          <label ngbButtonLabel class="btn-info">
+            <input
+              ngbButton
+              type="radio"
+              class="btn-check"
+              value="diskon"
+              (click)="resetType('diskon')"
+            />
+            Diskon
+          </label>
+          <label ngbButtonLabel class="btn-info">
+            <input
+              ngbButton
+              type="radio"
+              class="btn-check"
+              value="voucher"
+              (click)="resetType('diskon')"
+            />
+            Promo
+          </label>
+        </div>
+      </div>
+      <div class="mb-3" *ngIf="formModel.type === 'diskon'">
+        <label for="diskon" class="form-label">
+          Diskon
+        </label>
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            id="diskon"
+            name="diskon"
+            [(ngModel)]="formModel.diskon"
+            required
+          />
+          <span class="input-group-text">%</span>
+        </div>
+      </div>
+      <div class="mb-3" *ngIf="formModel.type === 'voucher'">
+        <label for="nominal" class="form-label">
+          Nominal
+        </label>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Rp.</span>
+          <input
+            type="text"
+            class="form-control"
+            id="nominal"
+            name="nominal"
+            [(ngModel)]="formModel.nominal"
+            aria-describedby="basic-addon1"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="test" class="form-label">
+          Kadaluarsa
+        </label>
+        <input
+          type="text"
+          class="form-control"
+          id="test"
+          name="test"
+          [(ngModel)]="formModel.kadaluarsa"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Syarat & Ketentuan</label>
+        <ckeditor
+          #editor
+          [(ngModel)]="formModel.syarat_ketentuan"
+          id="description"
+          name="description"
+          type="divarea"
+        ></ckeditor>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="mb-3">
+        <label class="form-label">Image</label>
+        <br />
+        <div class="btn-group">
+          <input
+            type="file"
+            class="form-control"
+            id="image"
+            name="foto"
+            (change)="readURL($event)"
+          />
+          <label class="input-group-text" for="image">
+            Browse
+          </label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <img
+          [src]="imgSrc || formModel.foto || formModel.fotoUrl"
+          class="rounded float-start img-menu"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <div class="">
+      <button
+        type="button"
+        class="btn btn-outline-secondary mr-2"
+        (click)="back()"
+      >
+        Daftar Promo
+      </button>
+      <button type="submit" class="btn btn-warning" (click)="save()">
+        Simpan
+      </button>
+    </div>
+  </div>
+</form>

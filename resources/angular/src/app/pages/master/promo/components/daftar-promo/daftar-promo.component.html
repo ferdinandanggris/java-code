@@ -1,0 +1,213 @@
+<div class="container-fluid" *ngIf="!isOpenForm">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h1>
+            Daftar Promo
+          </h1>
+          <div
+            role="group"
+            class="btn-group btn-group-sm btn-group-justified blocks"
+          >
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-2"
+              (click)="showSearch(formSearch)"
+            >
+              <i class="fa fa-search font-size-14 align-middle mr-1"></i>
+              Pencarian
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-primary mr-2"
+              (click)="createPromo()"
+            >
+              <i class="fa fa-plus font-size-14 align-middle mr-1"></i>
+              Tambah Promo
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table
+            datatable
+            class="table table-hover"
+            datatable
+            [dtOptions]="dtOptions"
+            class="table table-hover"
+            data-page-length="20"
+          >
+            <thead class="thead-light">
+              <tr>
+                <td>Nama</td>
+                <td>Type</td>
+                <td>Diskon</td>
+                <td>Nominal</td>
+                <td>Kadaluarsa</td>
+                <td>Syarat & Ketentuan</td>
+                <td width="90"></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let val of listPromos; index as i">
+                <td class="vertical-middle">{{ val.nama }}</td>
+                <td class="vertical-middle">{{ val.type }}</td>
+                <td class="vertical-middle">
+                  {{
+                    val.diskon == 0 || val.diskon == null
+                      ? '-'
+                      : val.diskon + '%'
+                  }}
+                </td>
+                <td class="vertical-middle">
+                  {{
+                    val.nominal == 0 || val.nominal == null
+                      ? '-'
+                      : (val.nominal | currency: 'Rp. ')
+                  }}
+                </td>
+                <td class="vertical-middle">{{ val.kadaluarsa }} day</td>
+                <td class="vertical-middle">{{ val.syarat_ketentuan }}</td>
+                <td class="vertical-middle text-right">
+                  <a
+                    href="javascript: void(0);"
+                    class="align-middle mr-2"
+                    placement="left"
+                    container="body"
+                    ngbTooltip="Image"
+                    (click)="showImage(imageModal, val)"
+                  >
+                    <i class="fa fa-solid fa-image"></i>
+                  </a>
+                  <a
+                    href="javascript: void(0);"
+                    class="align-middle mr-2"
+                    placement="left"
+                    container="body"
+                    ngbTooltip="Ubah"
+                    (click)="updatePromo(val)"
+                  >
+                    <i class="fa fa-edit font-size-14"></i>
+                  </a>
+                  <a
+                    href="javascript: void(0);"
+                    class="align-middle"
+                    placement="left"
+                    container="body"
+                    ngbTooltip="Hapus"
+                    (click)="deletePromo(val.id_promo)"
+                  >
+                    <i class="fa fa-trash font-size-14"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #imageModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">{{ promoImage.nama }}</h5>
+    <button
+      type="button"
+      class="close"
+      (click)="modal.close()"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <img [src]="promoImage.fotoUrl" class="rounded img-menu" />
+  </div>
+</ng-template>
+
+<div class="container-fluid" *ngIf="isOpenForm">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h1>
+            {{ titleCard }}
+          </h1>
+        </div>
+        <div class="card-body">
+          <app-form-promo
+            [promoId]="modelId"
+            (afterSave)="showForm(false); getPromo()"
+          ></app-form-promo>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #formSearch let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">{{ titleCard }}</h5>
+    <button
+      type="button"
+      class="close"
+      (click)="modal.close()"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group row">
+        <label class="col-md-4">Nama Promo</label>
+        <div class="col-md-8">
+          <input
+            type="text"
+            name="nama"
+            class="form-control"
+            placeholder="Nama Item"
+            [(ngModel)]="searchParams.nama"
+          />
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4">Type</label>
+        <div class="col-md-8">
+          <div
+            class="btn-group"
+            role="group"
+            ngbRadioGroup
+            name="type"
+            [(ngModel)]="searchParams.type"
+          >
+          <label ngbButtonLabel class="btn-info">
+            <input ngbButton type="radio" class="btn-check" value="" />
+            Semua
+          </label>
+            <label ngbButtonLabel class="btn-info">
+              <input ngbButton type="radio" class="btn-check" value="diskon" />
+              Diskon
+            </label>
+            <label ngbButtonLabel class="btn-info">
+              <input ngbButton type="radio" class="btn-check" value="voucher" />
+              Voucher
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-md-4"></label>
+        <div class="col-md-8">
+          <button type="submit" class="btn btn-primary" (click)="search()">
+            <i class="fa fa-search font-size-14 align-middle mr-1"></i>
+            Cari
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
